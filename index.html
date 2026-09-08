@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eef6fb">
+<title>Pear TXT → EPUB</title>
+<style>
+  :root{
+    --bg:#f7fbfd;
+    --card:#ffffff;
+    --blue:#8fb8d4;
+    --blue2:#5f86a3;
+    --line:#dbeaf5;
+    --muted:#9aabb6;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB",sans-serif;
+    background:linear-gradient(180deg,#f9fcfe 0%,#eef6fb 100%);
+    color:#314b5d;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px 16px calc(24px + env(safe-area-inset-bottom));
+  }
+  .wrap{width:min(100%,520px)}
+  .title{
+    text-align:center;
+    font-size:28px;
+    font-weight:700;
+    letter-spacing:.02em;
+    color:var(--blue2);
+    margin-bottom:8px;
+  }
+  .sub{
+    text-align:center;
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:22px;
+  }
+  .card{
+    background:rgba(255,255,255,.88);
+    border:1px solid var(--line);
+    border-radius:24px;
+    padding:20px;
+    box-shadow:0 12px 40px rgba(95,134,163,.10);
+    backdrop-filter:blur(14px);
+  }
+  .row{margin:14px 0}
+  .label{font-size:13px;color:var(--muted);margin-bottom:7px}
+  input[type="text"]{
+    width:100%;border:1px solid var(--line);border-radius:14px;
+    padding:13px 14px;font-size:16px;background:#fff;color:#314b5d;
+    outline:none;
+  }
+  input[type="text"]:focus{border-color:var(--blue)}
+  .file{
+    display:block;
+    width:100%;
+    padding:18px 14px;
+    border:1.5px dashed var(--blue);
+    border-radius:18px;
+    text-align:center;
+    color:var(--blue2);
+    background:#f7fbfd;
+    cursor:pointer;
+  }
+  .file input{display:none}
+  button{
+    width:100%;border:0;border-radius:16px;padding:14px 16px;
+    font-size:16px;font-weight:700;margin-top:10px;
+    background:var(--blue);color:white;
+  }
+  button.secondary{background:#eef6fb;color:var(--blue2);border:1px solid var(--line)}
+  button:disabled{opacity:.45}
+  .status{
+    margin-top:14px;padding:12px 14px;border-radius:14px;
+    background:#f8fbfd;color:#6e8796;font-size:14px;line-height:1.55;
+    min-height:44px;
+  }
+  .tiny{
+    text-align:center;color:#a6b4bd;font-size:12px;line-height:1.55;margin-top:16px
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="title">CAT MACHINE · TXT → EPUB</div>
+  <div class="sub">iPhone 本地转换 · 不上传正文 · Kindle 友好排版</div>
+  <div class="card">
+    <label class="file">
+      <input id="fileInput" type="file" accept=".txt,text/plain">
+      <span id="fileText">选择 TXT 文件</span>
+    </label>
+
+    <div class="row">
+      <div class="label">书名（可改）</div>
+      <input id="titleInput" type="text" placeholder="自动读取文件名 / 书名字段">
+    </div>
+
+    <div class="row">
+      <div class="label">作者（可留空）</div>
+      <input id="authorInput" type="text" placeholder="自动读取作者字段">
+    </div>
+
+    <button id="convertBtn" disabled>转换成 EPUB</button>
+    <button id="shareBtn" class="secondary" disabled>分享 / 存到“文件” / 打开 Kindle</button>
+
+    <div id="status" class="status">等待选择 TXT。</div>
+  </div>
+  <div class="tiny">不嵌入字体 · 不指定 font-family · 不锁字号 / 行距 / 字重 · zh-CN · 自动目录</div>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+  const fileInput = $("fileInput");
+  const fileText = $("fileText");
+  const titleInput = $("titleInput");
+  const authorInput = $("authorInput");
+  const convertBtn = $("convertBtn");
+  const shareBtn = $("shareBtn");
+  const statusEl = $("status");
+
+  let sourceFile = null;
+  let sourceText = "";
+  let epubBlob = null;
+  let epubName = "";
+
+  const chapterRe = /^\s*(?:第[0-9０-９一二三四五六七八九十百千万零〇两兩]+[章节卷回篇部集]|Chapter\s+\d+)(?:[\s　:：.．、\-—_].*)?$/i;
+
+  function setStatus(msg){ statusEl.textContent = msg; }
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"
+    }[c]));
+  }
+
+  function normalizeLines(text){
+    text = text.replace(/\r\n/g,"\n").replace(/\r/g,"\n").replace(/\u0000/g,"").replace(/\ufeff/g,"");
+    return text.split("\n").map(raw => {
+      let line = raw.replace(/[ \t　]+$/g,"");
+      line = line.replace(/^[\t　]+/g,"");
+      line = line.replace(/^ {1,4}(?=\S)/,"");
+      return line;
+    });
+  }
+
+  function extractMeta(lines, fallbackTitle){
+    let title = fallbackTitle;
+    let author = "";
+    for(const line of lines.slice(0,80)){
+      let m = line.match(/^\s*(?:书名|書名)\s*[：:]\s*(.+?)\s*$/);
+      if(m) title = m[1].trim();
+      m = line.match(/^\s*作者\s*[：:]\s*(.+?)\s*$/);
+      if(m) author = m[1].trim();
+    }
+    return {title, author};
+  }
+
+  function splitSections(lines){
+    const idx = [];
+    lines.forEach((line,i) => { if(chapterRe.test(line)) idx.push(i); });
+    if(!idx.length){
+      return [{title:"正文", paras:lines.filter(x=>x.trim())}];
+    }
+    const sections = [];
+    const pre = lines.slice(0,idx[0]).filter(x=>x.trim());
+    if(pre.length) sections.push({title:"书籍信息", paras:pre});
+    idx.forEach((start,j) => {
+      const end = (j+1<idx.length) ? idx[j+1] : lines.length;
+      sections.push({
+        title: lines[start].trim(),
+        paras: lines.slice(start+1,end).filter(x=>x.trim())
+      });
+    });
+    return sections;
+  }
+
+  async function decodeFile(file){
+    const buf = await file.arrayBuffer();
+    const candidates = ["utf-8","gb18030","big5"];
+    for(const enc of candidates){
+      try{
+        const dec = new TextDecoder(enc,{fatal:true});
+        return dec.decode(buf);
+      }catch(e){}
+    }
+    return new TextDecoder("utf-8").decode(buf);
+  }
+
+  const crcTable = (() => {
+    const table = new Uint32Array(256);
+    for(let n=0;n<256;n++){
+      let c=n;
+      for(let k=0;k<8;k++) c = (c&1) ? (0xEDB88320 ^ (c>>>1)) : (c>>>1);
+      table[n]=c>>>0;
+    }
+    return table;
+  })();
+
+  function crc32(bytes){
+    let c=0xFFFFFFFF;
+    for(let i=0;i<bytes.length;i++) c = crcTable[(c ^ bytes[i]) & 0xFF] ^ (c>>>8);
+    return (c ^ 0xFFFFFFFF)>>>0;
+  }
+
+  function u16(n){ return [n&255,(n>>>8)&255]; }
+  function u32(n){ return [n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255]; }
+
+  function concat(chunks){
+    let len=0; chunks.forEach(c=>len+=c.length);
+    const out=new Uint8Array(len); let p=0;
+    chunks.forEach(c=>{ out.set(c,p); p+=c.length; });
+    return out;
+  }
+
+  function makeZip(entries){
+    const enc = new TextEncoder();
+    const locals = [];
+    const centrals = [];
+    let offset = 0;
+
+    for(const ent of entries){
+      const name = enc.encode(ent.name);
+      const data = (typeof ent.data === "string") ? enc.encode(ent.data) : ent.data;
+      const crc = crc32(data);
+      const local = new Uint8Array([
+        ...u32(0x04034b50), ...u16(20), ...u16(0x0800), ...u16(0),
+        ...u16(0), ...u16(0), ...u32(crc), ...u32(data.length), ...u32(data.length),
+        ...u16(name.length), ...u16(0), ...name
+      ]);
+      locals.push(local,data);
+
+      const central = new Uint8Array([
+        ...u32(0x02014b50), ...u16(20), ...u16(20), ...u16(0x0800), ...u16(0),
+        ...u16(0), ...u16(0), ...u32(crc), ...u32(data.length), ...u32(data.length),
+        ...u16(name.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0),
+        ...u32(0), ...u32(offset), ...name
+      ]);
+      centrals.push(central);
+      offset += local.length + data.length;
+    }
+
+    const centralStart = offset;
+    const centralBlob = concat(centrals);
+    const end = new Uint8Array([
+      ...u32(0x06054b50), ...u16(0), ...u16(0),
+      ...u16(entries.length), ...u16(entries.length),
+      ...u32(centralBlob.length), ...u32(centralStart), ...u16(0)
+    ]);
+    return concat([...locals,centralBlob,end]);
+  }
+
+  const css = `html{-webkit-text-size-adjust:100%}body{margin:0;padding:0}p{margin:0;padding:0;text-indent:2em}h1{margin:1.2em 0;text-indent:0;text-align:center;font-weight:normal}.frontmatter p{text-indent:0}`;
+
+  function chapterXhtml(chTitle, paras, front){
+    const bodyClass = front ? ' class="frontmatter"' : "";
+    const ps = paras.map(p=>`    <p>${esc(p)}</p>`).join("\n");
+    return `<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<head><meta charset="utf-8"/><title>${esc(chTitle)}</title><link rel="stylesheet" type="text/css" href="../Styles/style.css"/></head>
+<body${bodyClass}><h1>${esc(chTitle)}</h1>
+${ps}
+</body></html>`;
+  }
+
+  function navXhtml(sections){
+    const lis = sections.map((s,i)=>`<li><a href="Text/chapter_${String(i+1).padStart(3,"0")}.xhtml">${esc(s.title)}</a></li>`).join("");
+    return `<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="zh-CN" lang="zh-CN">
+<head><meta charset="utf-8"/><title>目录</title></head>
+<body><nav epub:type="toc" id="toc"><h1>目录</h1><ol>${lis}</ol></nav></body></html>`;
+  }
+
+  function ncx(title, id, sections){
+    const pts = sections.map((s,i)=>`<navPoint id="navPoint-${i+1}" playOrder="${i+1}"><navLabel><text>${esc(s.title)}</text></navLabel><content src="Text/chapter_${String(i+1).padStart(3,"0")}.xhtml"/></navPoint>`).join("");
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1"><head><meta name="dtb:uid" content="${id}"/><meta name="dtb:depth" content="1"/><meta name="dtb:totalPageCount" content="0"/><meta name="dtb:maxPageNumber" content="0"/></head><docTitle><text>${esc(title)}</text></docTitle><navMap>${pts}</navMap></ncx>`;
+  }
+
+  function opf(title, author, id, sections){
+    const manifest = sections.map((_,i)=>`<item id="ch${i+1}" href="Text/chapter_${String(i+1).padStart(3,"0")}.xhtml" media-type="application/xhtml+xml"/>`).join("");
+    const spine = sections.map((_,i)=>`<itemref idref="ch${i+1}"/>`).join("");
+    const creator = author ? `<dc:creator>${esc(author)}</dc:creator>` : "";
+    const modified = new Date().toISOString().replace(/\.\d{3}Z$/,"Z");
+    return `<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bookid" xml:lang="zh-CN">
+<metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="bookid">${id}</dc:identifier><dc:title>${esc(title)}</dc:title>${creator}<dc:language>zh-CN</dc:language><meta property="dcterms:modified">${modified}</meta></metadata>
+<manifest><item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/><item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/><item id="css" href="Styles/style.css" media-type="text/css"/>${manifest}</manifest>
+<spine toc="ncx">${spine}</spine></package>`;
+  }
+
+  function buildEpub(title, author, sections){
+    const id = "urn:uuid:" + (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()));
+    const container = `<?xml version="1.0" encoding="UTF-8"?><container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>`;
+
+    const entries = [
+      {name:"mimetype", data:"application/epub+zip"},
+      {name:"META-INF/container.xml", data:container},
+      {name:"OEBPS/Styles/style.css", data:css},
+    ];
+
+    sections.forEach((s,i)=>{
+      entries.push({
+        name:`OEBPS/Text/chapter_${String(i+1).padStart(3,"0")}.xhtml`,
+        data:chapterXhtml(s.title,s.paras,(i===0 && s.title==="书籍信息"))
+      });
+    });
+
+    entries.push({name:"OEBPS/nav.xhtml", data:navXhtml(sections)});
+    entries.push({name:"OEBPS/toc.ncx", data:ncx(title,id,sections)});
+    entries.push({name:"OEBPS/content.opf", data:opf(title,author,id,sections)});
+
+    return new Blob([makeZip(entries)], {type:"application/epub+zip"});
+  }
+
+  fileInput.addEventListener("change", async () => {
+    const file = fileInput.files?.[0];
+    if(!file) return;
+    sourceFile = file;
+    fileText.textContent = file.name;
+    setStatus("正在读取 TXT（仅在本机浏览器中）…");
+    try{
+      sourceText = await decodeFile(file);
+      const lines = normalizeLines(sourceText);
+      const fallback = file.name.replace(/\.txt$/i,"");
+      const meta = extractMeta(lines,fallback);
+      titleInput.value = meta.title || fallback;
+      authorInput.value = meta.author || "";
+      const sections = splitSections(lines);
+      convertBtn.disabled = false;
+      setStatus(`读取完成：识别到 ${sections.length} 个目录区块。正文没有上传。`);
+    }catch(e){
+      console.error(e);
+      setStatus("读取失败：" + e.message);
+    }
+  });
+
+  convertBtn.addEventListener("click", () => {
+    if(!sourceFile || !sourceText) return;
+    try{
+      const lines = normalizeLines(sourceText);
+      const sections = splitSections(lines);
+      const title = titleInput.value.trim() || sourceFile.name.replace(/\.txt$/i,"");
+      const author = authorInput.value.trim();
+      epubBlob = buildEpub(title,author,sections);
+      epubName = title.replace(/[\\/:*?"<>|]/g,"_") + ".epub";
+      shareBtn.disabled = false;
+      setStatus(`转换完成：${epubName} · ${sections.length} 个目录区块。点下面按钮即可存到“文件”或分享给 Kindle。`);
+    }catch(e){
+      console.error(e);
+      setStatus("转换失败：" + e.message);
+    }
+  });
+
+  shareBtn.addEventListener("click", async () => {
+    if(!epubBlob) return;
+    const f = new File([epubBlob],epubName,{type:"application/epub+zip"});
+    if(navigator.canShare && navigator.canShare({files:[f]}) && navigator.share){
+      try{
+        await navigator.share({files:[f],title:epubName});
+        return;
+      }catch(e){
+        if(e.name === "AbortError") return;
+      }
+    }
+    const url = URL.createObjectURL(epubBlob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = epubName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),30000);
+    setStatus("已触发下载。可在 Safari 下载项里打开，再“分享”到 Kindle。");
+  });
+})();
+</script>
+</body>
+</html>
