@@ -7,9 +7,30 @@
 <title>Pear TXT → EPUB</title>
 <style>
 :root{--bg:#f7fbfd;--card:#fff;--blue:#8fb8d4;--blue2:#5f86a3;--line:#dbeaf5;--muted:#9aabb6}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB",sans-serif;background:linear-gradient(180deg,#f9fcfe 0%,#eef6fb 100%);color:#314b5d;display:flex;align-items:center;justify-content:center;padding:24px 16px calc(24px + env(safe-area-inset-bottom))}.wrap{width:min(100%,520px)}.title{text-align:center;font-size:28px;font-weight:700;letter-spacing:.02em;color:var(--blue2);margin-bottom:8px}.sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:22px}.card{background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:0 12px 40px rgba(95,134,163,.10);backdrop-filter:blur(14px)}.row{margin:14px 0}.label{font-size:13px;color:var(--muted);margin-bottom:7px}input[type=text]{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px 14px;font-size:16px;background:#fff;color:#314b5d;outline:none}input[type=text]:focus{border-color:var(--blue)}.file{display:block;width:100%;padding:18px 14px;border:1.5px dashed var(--blue);border-radius:18px;text-align:center;color:var(--blue2);background:#f7fbfd;cursor:pointer}.file input,#coverInput{display:none}
-.cover-row{display:flex;align-items:center;justify-content:space-between;padding:2px 2px 0}.cover-label{font-size:13px;color:var(--muted)}.cover-link{font-size:14px;color:var(--blue2);font-weight:500;cursor:pointer;padding:5px 0 5px 18px;-webkit-tap-highlight-color:transparent}.cover-link:active{opacity:.55}
-button{width:100%;border:0;border-radius:16px;padding:14px 16px;font-size:16px;font-weight:700;margin-top:10px;background:var(--blue);color:#fff}button.secondary{background:#eef6fb;color:var(--blue2);border:1px solid var(--line)}button:disabled{opacity:.45}.status{margin-top:14px;padding:12px 14px;border-radius:14px;background:#f8fbfd;color:#6e8796;font-size:14px;line-height:1.55;min-height:44px}.tiny{text-align:center;color:#a6b4bd;font-size:12px;line-height:1.55;margin-top:16px}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#eef6fb}
+body{min-height:100svh;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB",sans-serif;background:linear-gradient(180deg,#f9fcfe 0%,#eef6fb 100%);color:#314b5d;display:flex;align-items:center;justify-content:center;padding:14px 16px calc(14px + env(safe-area-inset-bottom))}
+.wrap{width:min(100%,520px)}
+.title{text-align:center;font-size:26px;font-weight:700;letter-spacing:.02em;color:var(--blue2);margin:0 0 5px}
+.sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:14px}
+.card{background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:22px;padding:15px 18px;box-shadow:0 10px 34px rgba(95,134,163,.09);backdrop-filter:blur(14px)}
+.row{margin:10px 0}.label{font-size:12.5px;color:var(--muted);margin-bottom:5px}
+input[type=text]{width:100%;border:1px solid var(--line);border-radius:13px;padding:11px 13px;font-size:16px;background:#fff;color:#314b5d;outline:none}
+input[type=text]:focus{border-color:var(--blue)}
+.file{display:block;width:100%;padding:14px 12px;border:1.5px dashed var(--blue);border-radius:16px;text-align:center;color:var(--blue2);background:#f7fbfd;cursor:pointer}.file input,#coverInput{display:none}
+.cover-row{display:flex;align-items:center;justify-content:space-between;padding:0 2px}.cover-label{font-size:13px;color:var(--muted)}.cover-link{font-size:14px;color:var(--blue2);font-weight:500;cursor:pointer;padding:4px 0 4px 18px;-webkit-tap-highlight-color:transparent}.cover-link:active{opacity:.55}
+button{width:100%;border:0;border-radius:15px;padding:12px 15px;font-size:16px;font-weight:700;margin-top:8px;background:var(--blue);color:#fff}
+button.secondary{background:#eef6fb;color:var(--blue2);border:1px solid var(--line)}button:disabled{opacity:.45}
+.status{margin-top:10px;padding:10px 12px;border-radius:13px;background:#f8fbfd;color:#6e8796;font-size:13px;line-height:1.45;min-height:40px}
+.tiny{text-align:center;color:#a6b4bd;font-size:11px;line-height:1.45;margin-top:10px}
+@media(max-height:760px){
+ body{padding-top:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
+ .title{font-size:24px;margin-bottom:3px}.sub{font-size:12px;margin-bottom:9px}
+ .card{padding:12px 15px;border-radius:20px}.row{margin:8px 0}.label{margin-bottom:4px}
+ .file{padding:11px 10px}input[type=text]{padding:9px 12px}
+ button{padding:10px 14px;margin-top:7px}.status{padding:8px 11px;margin-top:8px;min-height:36px}
+ .tiny{display:none}
+}
 </style>
 </head>
 <body>
@@ -40,12 +61,12 @@ function splitSections(lines){const idx=[];lines.forEach((line,i)=>{if(chapterRe
 async function decodeFile(file){const buf=await file.arrayBuffer();for(const enc of ["utf-8","gb18030","big5"]){try{return new TextDecoder(enc,{fatal:true}).decode(buf)}catch(e){}}return new TextDecoder("utf-8").decode(buf)}
 
 const COVER_W=1600,COVER_H=2400;
-const TITLE_FONT='"STSong","Songti SC","Hiragino Mincho ProN","SimSun",serif';
-const AUTHOR_FONT='"STSong","Songti SC","Hiragino Mincho ProN","SimSun",serif';
+const TITLE_FONT='"Songti SC","STSong","Hiragino Mincho ProN","SimSun",serif';
+const AUTHOR_FONT='"Songti SC","STSong","Hiragino Mincho ProN","SimSun",serif';
 function makeCanvas(){const c=document.createElement("canvas");c.width=COVER_W;c.height=COVER_H;return c}
 function wrapText(ctx,text,maxWidth){const chars=Array.from(text||""),lines=[];let line="";for(const ch of chars){const test=line+ch;if(line&&ctx.measureText(test).width>maxWidth){lines.push(line);line=ch}else line=test}if(line)lines.push(line);return lines}
-function fitTitle(ctx,text){const maxWidth=1120;let size=126,lines=[];while(size>=88){ctx.font=`${size}px ${TITLE_FONT}`;lines=wrapText(ctx,text,maxWidth);if(lines.length<=3&&lines.every(line=>ctx.measureText(line).width<=maxWidth))return{size,lines};size-=4}ctx.font=`88px ${TITLE_FONT}`;return{size:88,lines:wrapText(ctx,text,maxWidth).slice(0,3)}}
-function drawAutoCover(title,author){const canvas=makeCanvas(),ctx=canvas.getContext("2d");ctx.fillStyle="#F7F5F1";ctx.fillRect(0,0,COVER_W,COVER_H);const safeTitle=(title||"未命名").trim();const fitted=fitTitle(ctx,safeTitle),size=fitted.size,lines=fitted.lines;ctx.font=`${size}px ${TITLE_FONT}`;ctx.fillStyle="#1F1F1F";ctx.textAlign="center";ctx.textBaseline="middle";const lineHeight=size*1.38,totalHeight=lineHeight*lines.length;let y=1050-totalHeight/2+lineHeight/2;for(const line of lines){ctx.fillText(line,COVER_W/2,y);y+=lineHeight}if((author||"").trim()){ctx.fillStyle="#666666";ctx.font=`82px ${AUTHOR_FONT}`;ctx.fillText(author.trim(),COVER_W/2,1570)}ctx.strokeStyle="#D7D7D7";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(748,1665);ctx.lineTo(852,1665);ctx.stroke();return canvas}
+function fitTitle(ctx,text){const maxWidth=1220;let size=172,lines=[];while(size>=104){ctx.font=`600 ${size}px ${TITLE_FONT}`;lines=wrapText(ctx,text,maxWidth);if(lines.length<=3&&lines.every(line=>ctx.measureText(line).width<=maxWidth))return{size,lines};size-=4}ctx.font=`600 104px ${TITLE_FONT}`;return{size:104,lines:wrapText(ctx,text,maxWidth).slice(0,3)}}
+function drawAutoCover(title,author){const canvas=makeCanvas(),ctx=canvas.getContext("2d");ctx.fillStyle="#F7F5F1";ctx.fillRect(0,0,COVER_W,COVER_H);const safeTitle=(title||"未命名").trim(),fitted=fitTitle(ctx,safeTitle),size=fitted.size,lines=fitted.lines;ctx.font=`600 ${size}px ${TITLE_FONT}`;ctx.fillStyle="#171717";ctx.textAlign="center";ctx.textBaseline="middle";const lineHeight=size*1.3,totalHeight=lineHeight*lines.length;let y=1010-totalHeight/2+lineHeight/2;for(const line of lines){ctx.fillText(line,COVER_W/2,y);y+=lineHeight}if((author||"").trim()){ctx.fillStyle="#555";ctx.font=`400 94px ${AUTHOR_FONT}`;ctx.fillText(author.trim(),COVER_W/2,1560)}ctx.strokeStyle="#D7D7D7";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(744,1660);ctx.lineTo(856,1660);ctx.stroke();return canvas}
 function canvasToBlob(canvas,type="image/png",quality=.94){return new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error("封面生成失败")),type,quality))}
 function loadImageFromFile(file){return new Promise((resolve,reject)=>{const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{URL.revokeObjectURL(url);resolve(img)};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error("无法读取封面图片"))};img.src=url})}
 async function makeCustomCoverBlob(file){const img=await loadImageFromFile(file),canvas=makeCanvas(),ctx=canvas.getContext("2d");ctx.fillStyle="#F7F5F1";ctx.fillRect(0,0,COVER_W,COVER_H);const scale=Math.max(COVER_W/img.naturalWidth,COVER_H/img.naturalHeight),w=img.naturalWidth*scale,h=img.naturalHeight*scale;ctx.drawImage(img,(COVER_W-w)/2,(COVER_H-h)/2,w,h);return canvasToBlob(canvas,"image/png")}
