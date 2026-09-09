@@ -28,12 +28,29 @@
   }
   .wrap{width:min(100%,520px)}
   .title{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
     text-align:center;
     font-size:28px;
     font-weight:700;
     letter-spacing:.02em;
     color:var(--blue2);
     margin-bottom:8px;
+  }
+  .cat-tail{
+    width:42px;
+    height:24px;
+    flex:0 0 auto;
+    opacity:.72;
+    transform:translateY(1px);
+  }
+  .cat-tail path{
+    fill:none;
+    stroke:var(--blue);
+    stroke-width:3.2;
+    stroke-linecap:round;
   }
   .sub{
     text-align:center;
@@ -88,7 +105,7 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="title">CAT MACHINE · TXT → EPUB</div>
+  <div class="title"><span>TXT</span><svg class="cat-tail" viewBox="0 0 48 26" aria-hidden="true"><path d="M4 18 C12 8, 20 8, 24 14 C28 20, 34 21, 43 9"/></svg><span>EPUB</span></div>
   <div class="sub">iPhone 本地转换 · 不上传正文 · Kindle 友好排版</div>
   <div class="card">
     <label class="file">
@@ -111,7 +128,7 @@
 
     <div id="status" class="status">等待选择 TXT。</div>
   </div>
-  <div class="tiny">不嵌入字体 · 不指定 font-family · 不锁字号 / 行距 / 字重 · zh-CN · 自动目录</div>
+  <div class="tiny">不嵌入字体 · 不指定 font-family · 不锁字号 / 行距 / 字重 · zh-CN · 自动目录 · with kitty</div>
 </div>
 
 <script>
@@ -355,7 +372,7 @@ ${ps}
       epubBlob = buildEpub(title,author,sections);
       epubName = title.replace(/[\\/:*?"<>|]/g,"_") + ".epub";
       shareBtn.disabled = false;
-      setStatus(`转换完成：${epubName} · ${sections.length} 个目录区块。点下面按钮即可存到“文件”或分享给 Kindle。`);
+      setStatus(`转换完成：${epubName}。点下面按钮即可存到“文件”或分享给 Kindle。`);
     }catch(e){
       console.error(e);
       setStatus("转换失败：" + e.message);
