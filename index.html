@@ -6,121 +6,11 @@
 <meta name="theme-color" content="#eef6fb">
 <title>Pear TXT → EPUB</title>
 <style>
-  :root{
-    --bg:#f7fbfd;
-    --card:#ffffff;
-    --blue:#8fb8d4;
-    --blue2:#5f86a3;
-    --line:#dbeaf5;
-    --muted:#9aabb6;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    min-height:100vh;
-    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB",sans-serif;
-    background:linear-gradient(180deg,#f9fcfe 0%,#eef6fb 100%);
-    color:#314b5d;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:24px 16px calc(24px + env(safe-area-inset-bottom));
-  }
-  .wrap{width:min(100%,520px)}
-  .title{
-    text-align:center;
-    font-size:28px;
-    font-weight:700;
-    letter-spacing:.02em;
-    color:var(--blue2);
-    margin-bottom:8px;
-  }
-  .sub{
-    text-align:center;
-    color:var(--muted);
-    font-size:14px;
-    margin-bottom:22px;
-  }
-  .card{
-    background:rgba(255,255,255,.88);
-    border:1px solid var(--line);
-    border-radius:24px;
-    padding:20px;
-    box-shadow:0 12px 40px rgba(95,134,163,.10);
-    backdrop-filter:blur(14px);
-  }
-  .row{margin:14px 0}
-  .label{font-size:13px;color:var(--muted);margin-bottom:7px}
-  input[type="text"]{
-    width:100%;border:1px solid var(--line);border-radius:14px;
-    padding:13px 14px;font-size:16px;background:#fff;color:#314b5d;
-    outline:none;
-  }
-  input[type="text"]:focus{border-color:var(--blue)}
-  .file{
-    display:block;
-    width:100%;
-    padding:18px 14px;
-    border:1.5px dashed var(--blue);
-    border-radius:18px;
-    text-align:center;
-    color:var(--blue2);
-    background:#f7fbfd;
-    cursor:pointer;
-  }
-  .file input{display:none}
-  .cover-box{
-    display:flex;
-    gap:16px;
-    align-items:center;
-    padding:14px;
-    border:1px solid var(--line);
-    border-radius:16px;
-    background:#fbfdfe;
-  }
-  #coverPreview{
-    width:82px;
-    aspect-ratio:5/8;
-    border-radius:4px;
-    border:1px solid #e5e3df;
-    object-fit:cover;
-    background:#f7f5f1;
-    box-shadow:0 6px 16px rgba(49,75,93,.08);
-    flex:none;
-  }
-  .cover-actions{flex:1;min-width:0}
-  .cover-name{font-size:14px;color:#536d7e;margin-bottom:8px;line-height:1.4}
-  .cover-note{font-size:12px;color:var(--muted);line-height:1.45;margin-top:7px}
-  .cover-buttons{display:flex;gap:8px;flex-wrap:wrap}
-  .cover-btn{
-    width:auto;
-    margin:0;
-    padding:9px 12px;
-    border-radius:11px;
-    font-size:13px;
-    font-weight:600;
-    color:var(--blue2);
-    background:#eef6fb;
-    border:1px solid var(--line);
-    cursor:pointer;
-  }
-  .cover-btn.ghost{background:white;color:#7b8e99}
-  #coverInput{display:none}
-  button{
-    width:100%;border:0;border-radius:16px;padding:14px 16px;
-    font-size:16px;font-weight:700;margin-top:10px;
-    background:var(--blue);color:white;
-  }
-  button.secondary{background:#eef6fb;color:var(--blue2);border:1px solid var(--line)}
-  button:disabled{opacity:.45}
-  .status{
-    margin-top:14px;padding:12px 14px;border-radius:14px;
-    background:#f8fbfd;color:#6e8796;font-size:14px;line-height:1.55;
-    min-height:44px;
-  }
-  .tiny{
-    text-align:center;color:#a6b4bd;font-size:12px;line-height:1.55;margin-top:16px
-  }
+:root{--bg:#f7fbfd;--card:#fff;--blue:#8fb8d4;--blue2:#5f86a3;--line:#dbeaf5;--muted:#9aabb6}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB",sans-serif;background:linear-gradient(180deg,#f9fcfe 0%,#eef6fb 100%);color:#314b5d;display:flex;align-items:center;justify-content:center;padding:24px 16px calc(24px + env(safe-area-inset-bottom))}.wrap{width:min(100%,520px)}.title{text-align:center;font-size:28px;font-weight:700;letter-spacing:.02em;color:var(--blue2);margin-bottom:8px}.sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:22px}.card{background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:0 12px 40px rgba(95,134,163,.10);backdrop-filter:blur(14px)}.row{margin:14px 0}.label{font-size:13px;color:var(--muted);margin-bottom:7px}input[type=text]{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px 14px;font-size:16px;background:#fff;color:#314b5d;outline:none}input[type=text]:focus{border-color:var(--blue)}.file{display:block;width:100%;padding:18px 14px;border:1.5px dashed var(--blue);border-radius:18px;text-align:center;color:var(--blue2);background:#f7fbfd;cursor:pointer}.file input,#coverInput{display:none}
+.cover-compact{display:grid;grid-template-columns:auto 46px 1fr auto;gap:10px;align-items:center;padding:9px 10px;border:1px solid var(--line);border-radius:14px;background:#fbfdfe}.cover-label{font-size:13px;color:var(--muted);white-space:nowrap}#coverPreview{width:46px;aspect-ratio:5/8;border-radius:3px;border:1px solid #e5e3df;object-fit:cover;background:#f7f5f1;box-shadow:0 3px 9px rgba(49,75,93,.07)}.cover-meta{min-width:0}.cover-name{font-size:14px;color:#536d7e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cover-note{font-size:11px;color:#a6b4bd;margin-top:2px}.cover-controls{display:flex;gap:6px;align-items:center}.cover-btn{width:auto;margin:0;padding:7px 9px;border-radius:9px;font-size:12px;font-weight:600;color:var(--blue2);background:#eef6fb;border:1px solid var(--line);cursor:pointer;white-space:nowrap}.cover-btn.ghost{background:#fff;color:#7b8e99}.cover-btn:disabled{display:none}
+button{width:100%;border:0;border-radius:16px;padding:14px 16px;font-size:16px;font-weight:700;margin-top:10px;background:var(--blue);color:#fff}button.secondary{background:#eef6fb;color:var(--blue2);border:1px solid var(--line)}button:disabled{opacity:.45}.status{margin-top:14px;padding:12px 14px;border-radius:14px;background:#f8fbfd;color:#6e8796;font-size:14px;line-height:1.55;min-height:44px}.tiny{text-align:center;color:#a6b4bd;font-size:12px;line-height:1.55;margin-top:16px}
+@media(max-width:420px){.cover-compact{grid-template-columns:auto 42px 1fr}.cover-controls{grid-column:3;justify-content:flex-start}.cover-label{align-self:start;padding-top:3px}#coverPreview{width:42px}}
 </style>
 </head>
 <body>
@@ -128,482 +18,61 @@
   <div class="title">TXT → EPUB</div>
   <div class="sub">iPhone 本地转换 · 不上传正文 · Kindle 友好排版</div>
   <div class="card">
-    <label class="file">
-      <input id="fileInput" type="file" accept=".txt,text/plain">
-      <span id="fileText">选择 TXT 文件</span>
-    </label>
-
+    <label class="file"><input id="fileInput" type="file" accept=".txt,text/plain"><span id="fileText">选择 TXT 文件</span></label>
+    <div class="row"><div class="label">书名（可改）</div><input id="titleInput" type="text" placeholder="自动读取文件名 / 书名字段"></div>
+    <div class="row"><div class="label">作者（可留空）</div><input id="authorInput" type="text" placeholder="自动读取作者字段"></div>
     <div class="row">
-      <div class="label">书名（可改）</div>
-      <input id="titleInput" type="text" placeholder="自动读取文件名 / 书名字段">
-    </div>
-
-    <div class="row">
-      <div class="label">作者（可留空）</div>
-      <input id="authorInput" type="text" placeholder="自动读取作者字段">
-    </div>
-
-    <div class="row">
-      <div class="label">封面</div>
-      <div class="cover-box">
+      <div class="cover-compact">
+        <div class="cover-label">封面</div>
         <img id="coverPreview" alt="封面预览">
-        <div class="cover-actions">
-          <div id="coverName" class="cover-name">自动生成纯文字封面</div>
-          <div class="cover-buttons">
-            <label class="cover-btn" for="coverInput">自定义图片</label>
-            <input id="coverInput" type="file" accept="image/jpeg,image/png,image/webp,image/*">
-            <button id="resetCoverBtn" class="cover-btn ghost" type="button" disabled>恢复自动封面</button>
-          </div>
-          <div class="cover-note">默认自动生成统一封面；自定义图片仅在你想换的时候使用。</div>
+        <div class="cover-meta"><div id="coverName" class="cover-name">文字封面</div><div class="cover-note">北京JDG倒闭了。</div></div>
+        <div class="cover-controls">
+          <label class="cover-btn" for="coverInput">更换</label><input id="coverInput" type="file" accept="image/jpeg,image/png,image/webp,image/*">
+          <button id="resetCoverBtn" class="cover-btn ghost" type="button" disabled>恢复</button>
         </div>
       </div>
     </div>
-
     <button id="convertBtn" disabled>转换成 EPUB</button>
     <button id="shareBtn" class="secondary" disabled>分享 / 存到“文件” / 打开 Kindle</button>
-
     <div id="status" class="status">等待选择 TXT。</div>
   </div>
   <div class="tiny">不嵌入字体 · 不指定 font-family · 不锁字号 / 行距 / 字重 · zh-CN</div>
 </div>
-
 <script>
-(() => {
-  "use strict";
-
-  const $ = (id) => document.getElementById(id);
-  const fileInput = $("fileInput");
-  const fileText = $("fileText");
-  const titleInput = $("titleInput");
-  const authorInput = $("authorInput");
-  const coverInput = $("coverInput");
-  const coverPreview = $("coverPreview");
-  const coverName = $("coverName");
-  const resetCoverBtn = $("resetCoverBtn");
-  const convertBtn = $("convertBtn");
-  const shareBtn = $("shareBtn");
-  const statusEl = $("status");
-
-  let sourceFile = null;
-  let sourceText = "";
-  let customCoverFile = null;
-  let customCoverUrl = "";
-  let epubBlob = null;
-  let epubName = "";
-
-  const chapterRe = /^\s*(?:第[0-9０-９一二三四五六七八九十百千万零〇两兩]+[章节卷回篇部集].*|Chapter\s+\d+.*)$/i;
-
-  function setStatus(msg){ statusEl.textContent = msg; }
-
-  function esc(s){
-    return String(s).replace(/[&<>"']/g, c => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"
-    }[c]));
-  }
-
-  function normalizeLines(text){
-    text = text.replace(/\r\n/g,"\n").replace(/\r/g,"\n").replace(/\u0000/g,"").replace(/\ufeff/g,"");
-    return text.split("\n").map(raw => {
-      let line = raw.replace(/[ \t　]+$/g,"");
-      line = line.replace(/^[\t　]+/g,"");
-      line = line.replace(/^ {1,4}(?=\S)/,"");
-      return line;
-    });
-  }
-
-  function extractMeta(lines, fallbackTitle){
-    let title = fallbackTitle;
-    let author = "";
-    for(const line of lines.slice(0,80)){
-      let m = line.match(/^\s*(?:书名|書名)\s*[：:]\s*(.+?)\s*$/);
-      if(m) title = m[1].trim();
-      m = line.match(/^\s*作者\s*[：:]\s*(.+?)\s*$/);
-      if(m) author = m[1].trim();
-    }
-    return {title, author};
-  }
-
-  function splitSections(lines){
-    const idx = [];
-    lines.forEach((line,i) => { if(chapterRe.test(line)) idx.push(i); });
-    if(!idx.length){
-      return [{title:"正文", paras:lines.filter(x=>x.trim())}];
-    }
-    const sections = [];
-    const pre = lines.slice(0,idx[0]).filter(x=>x.trim());
-    if(pre.length) sections.push({title:"书籍信息", paras:pre});
-    idx.forEach((start,j) => {
-      const end = (j+1<idx.length) ? idx[j+1] : lines.length;
-      sections.push({
-        title: lines[start].trim(),
-        paras: lines.slice(start+1,end).filter(x=>x.trim())
-      });
-    });
-    return sections;
-  }
-
-  async function decodeFile(file){
-    const buf = await file.arrayBuffer();
-    const candidates = ["utf-8","gb18030","big5"];
-    for(const enc of candidates){
-      try{
-        const dec = new TextDecoder(enc,{fatal:true});
-        return dec.decode(buf);
-      }catch(e){}
-    }
-    return new TextDecoder("utf-8").decode(buf);
-  }
-
-  function makeCanvas(){
-    const canvas = document.createElement("canvas");
-    canvas.width = 1600;
-    canvas.height = 2560;
-    return canvas;
-  }
-
-  function wrapText(ctx, text, maxWidth){
-    const chars = Array.from(text || "");
-    const lines = [];
-    let line = "";
-    for(const ch of chars){
-      const test = line + ch;
-      if(line && ctx.measureText(test).width > maxWidth){
-        lines.push(line);
-        line = ch;
-      }else{
-        line = test;
-      }
-    }
-    if(line) lines.push(line);
-    return lines;
-  }
-
-  function drawAutoCover(title, author){
-    const canvas = makeCanvas();
-    const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#F7F5F1";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-
-    const safeTitle = (title || "未命名").trim();
-    const maxWidth = 1260;
-    let size = 190;
-    let lines = [];
-    do{
-      ctx.font = `600 ${size}px -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif`;
-      lines = wrapText(ctx,safeTitle,maxWidth);
-      if(lines.length <= 4) break;
-      size -= 10;
-    }while(size > 92);
-
-    while(lines.some(line => ctx.measureText(line).width > maxWidth) && size > 92){
-      size -= 6;
-      ctx.font = `600 ${size}px -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif`;
-      lines = wrapText(ctx,safeTitle,maxWidth);
-    }
-
-    ctx.fillStyle = "#1F1F1F";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    const lineHeight = size * 1.28;
-    const titleCenterY = 1080;
-    const totalHeight = lineHeight * lines.length;
-    let y = titleCenterY - totalHeight/2 + lineHeight/2;
-    lines.forEach(line => {
-      ctx.fillText(line,800,y);
-      y += lineHeight;
-    });
-
-    if((author || "").trim()){
-      ctx.fillStyle = "#777777";
-      ctx.font = `400 66px "Songti SC", "STSong", "SimSun", serif`;
-      ctx.letterSpacing = "6px";
-      ctx.fillText(author.trim(),800,2040);
-    }
-
-    ctx.strokeStyle = "#D7D7D7";
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(735,2185);
-    ctx.lineTo(865,2185);
-    ctx.stroke();
-    return canvas;
-  }
-
-  function canvasToBlob(canvas, type="image/png", quality=.94){
-    return new Promise((resolve,reject)=>{
-      canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error("封面生成失败")), type, quality);
-    });
-  }
-
-  function loadImageFromFile(file){
-    return new Promise((resolve,reject)=>{
-      const url = URL.createObjectURL(file);
-      const img = new Image();
-      img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
-      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("无法读取封面图片")); };
-      img.src = url;
-    });
-  }
-
-  async function makeCustomCoverBlob(file){
-    const img = await loadImageFromFile(file);
-    const canvas = makeCanvas();
-    const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#F7F5F1";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    const scale = Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
-    const w = img.naturalWidth * scale;
-    const h = img.naturalHeight * scale;
-    const x = (canvas.width - w)/2;
-    const y = (canvas.height - h)/2;
-    ctx.drawImage(img,x,y,w,h);
-    return canvasToBlob(canvas,"image/jpeg",.92);
-  }
-
-  async function makeCoverBlob(title,author){
-    if(customCoverFile) return makeCustomCoverBlob(customCoverFile);
-    return canvasToBlob(drawAutoCover(title,author),"image/png");
-  }
-
-  function refreshCoverPreview(){
-    if(customCoverFile){
-      coverName.textContent = customCoverFile.name;
-      if(customCoverUrl) URL.revokeObjectURL(customCoverUrl);
-      customCoverUrl = URL.createObjectURL(customCoverFile);
-      coverPreview.src = customCoverUrl;
-      resetCoverBtn.disabled = false;
-      return;
-    }
-    coverName.textContent = "自动生成纯文字封面";
-    resetCoverBtn.disabled = true;
-    const canvas = drawAutoCover(titleInput.value || "书名", authorInput.value || "作者");
-    coverPreview.src = canvas.toDataURL("image/jpeg",.86);
-  }
-
-  const crcTable = (() => {
-    const table = new Uint32Array(256);
-    for(let n=0;n<256;n++){
-      let c=n;
-      for(let k=0;k<8;k++) c = (c&1) ? (0xEDB88320 ^ (c>>>1)) : (c>>>1);
-      table[n]=c>>>0;
-    }
-    return table;
-  })();
-
-  function crc32(bytes){
-    let c=0xFFFFFFFF;
-    for(let i=0;i<bytes.length;i++) c = crcTable[(c ^ bytes[i]) & 0xFF] ^ (c>>>8);
-    return (c ^ 0xFFFFFFFF)>>>0;
-  }
-
-  function u16(n){ return [n&255,(n>>>8)&255]; }
-  function u32(n){ return [n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255]; }
-
-  function concat(chunks){
-    let len=0; chunks.forEach(c=>len+=c.length);
-    const out=new Uint8Array(len); let p=0;
-    chunks.forEach(c=>{ out.set(c,p); p+=c.length; });
-    return out;
-  }
-
-  function makeZip(entries){
-    const enc = new TextEncoder();
-    const locals = [];
-    const centrals = [];
-    let offset = 0;
-
-    for(const ent of entries){
-      const name = enc.encode(ent.name);
-      const data = (typeof ent.data === "string") ? enc.encode(ent.data) : ent.data;
-      const crc = crc32(data);
-      const local = new Uint8Array([
-        ...u32(0x04034b50), ...u16(20), ...u16(0x0800), ...u16(0),
-        ...u16(0), ...u16(0), ...u32(crc), ...u32(data.length), ...u32(data.length),
-        ...u16(name.length), ...u16(0), ...name
-      ]);
-      locals.push(local,data);
-
-      const central = new Uint8Array([
-        ...u32(0x02014b50), ...u16(20), ...u16(20), ...u16(0x0800), ...u16(0),
-        ...u16(0), ...u16(0), ...u32(crc), ...u32(data.length), ...u32(data.length),
-        ...u16(name.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0),
-        ...u32(0), ...u32(offset), ...name
-      ]);
-      centrals.push(central);
-      offset += local.length + data.length;
-    }
-
-    const centralStart = offset;
-    const centralBlob = concat(centrals);
-    const end = new Uint8Array([
-      ...u32(0x06054b50), ...u16(0), ...u16(0),
-      ...u16(entries.length), ...u16(entries.length),
-      ...u32(centralBlob.length), ...u32(centralStart), ...u16(0)
-    ]);
-    return concat([...locals,centralBlob,end]);
-  }
-
-  const css = `html{-webkit-text-size-adjust:100%}body{margin:0;padding:0}p{margin:0;padding:0;text-indent:2em}h1{margin:1.2em 0;text-indent:0;text-align:center;font-weight:normal}.frontmatter p{text-indent:0}`;
-
-  function coverXhtml(){
-    return `<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
-<head><meta charset="utf-8"/><title>封面</title><style>html,body{margin:0;padding:0;width:100%;height:100%;text-align:center}img{max-width:100%;max-height:100%;object-fit:contain}</style></head>
-<body><img src="Images/cover.png" alt="封面"/></body></html>`;
-  }
-
-  function chapterXhtml(chTitle, paras, front){
-    const bodyClass = front ? ' class="frontmatter"' : "";
-    const ps = paras.map(p=>`    <p>${esc(p)}</p>`).join("\n");
-    return `<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
-<head><meta charset="utf-8"/><title>${esc(chTitle)}</title><link rel="stylesheet" type="text/css" href="../Styles/style.css"/></head>
-<body${bodyClass}><h1>${esc(chTitle)}</h1>
-${ps}
-</body></html>`;
-  }
-
-  function navXhtml(sections){
-    const lis = sections.map((s,i)=>`<li><a href="Text/chapter_${String(i+1).padStart(3,"0")}.xhtml">${esc(s.title)}</a></li>`).join("");
-    return `<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="zh-CN" lang="zh-CN">
-<head><meta charset="utf-8"/><title>目录</title></head>
-<body><nav epub:type="toc" id="toc"><h1>目录</h1><ol>${lis}</ol></nav></body></html>`;
-  }
-
-  function ncx(title, id, sections){
-    const pts = sections.map((s,i)=>`<navPoint id="navPoint-${i+1}" playOrder="${i+1}"><navLabel><text>${esc(s.title)}</text></navLabel><content src="Text/chapter_${String(i+1).padStart(3,"0")}.xhtml"/></navPoint>`).join("");
-    return `<?xml version="1.0" encoding="UTF-8"?>
-<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1"><head><meta name="dtb:uid" content="${id}"/><meta name="dtb:depth" content="1"/><meta name="dtb:totalPageCount" content="0"/><meta name="dtb:maxPageNumber" content="0"/></head><docTitle><text>${esc(title)}</text></docTitle><navMap>${pts}</navMap></ncx>`;
-  }
-
-  function opf(title, author, id, sections){
-    const manifest = sections.map((_,i)=>`<item id="ch${i+1}" href="Text/chapter_${String(i+1).padStart(3,"0")}.xhtml" media-type="application/xhtml+xml"/>`).join("");
-    const spine = sections.map((_,i)=>`<itemref idref="ch${i+1}"/>`).join("");
-    const creator = author ? `<dc:creator>${esc(author)}</dc:creator>` : "";
-    const modified = new Date().toISOString().replace(/\.\d{3}Z$/,"Z");
-    return `<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bookid" xml:lang="zh-CN">
-<metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="bookid">${id}</dc:identifier><dc:title>${esc(title)}</dc:title>${creator}<dc:language>zh-CN</dc:language><meta property="dcterms:modified">${modified}</meta><meta name="cover" content="cover-image"/></metadata>
-<manifest><item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/><item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/><item id="css" href="Styles/style.css" media-type="text/css"/><item id="cover-image" href="Images/cover.png" media-type="image/png" properties="cover-image"/><item id="cover-page" href="cover.xhtml" media-type="application/xhtml+xml"/>${manifest}</manifest>
-<spine toc="ncx"><itemref idref="cover-page"/>${spine}</spine></package>`;
-  }
-
-  async function buildEpub(title, author, sections){
-    const id = "urn:uuid:" + (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()));
-    const container = `<?xml version="1.0" encoding="UTF-8"?><container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>`;
-    const coverBlob = await makeCoverBlob(title,author);
-    const coverBytes = new Uint8Array(await coverBlob.arrayBuffer());
-
-    const entries = [
-      {name:"mimetype", data:"application/epub+zip"},
-      {name:"META-INF/container.xml", data:container},
-      {name:"OEBPS/Styles/style.css", data:css},
-      {name:"OEBPS/Images/cover.png", data:coverBytes},
-      {name:"OEBPS/cover.xhtml", data:coverXhtml()},
-    ];
-
-    sections.forEach((s,i)=>{
-      entries.push({
-        name:`OEBPS/Text/chapter_${String(i+1).padStart(3,"0")}.xhtml`,
-        data:chapterXhtml(s.title,s.paras,(i===0 && s.title==="书籍信息"))
-      });
-    });
-
-    entries.push({name:"OEBPS/nav.xhtml", data:navXhtml(sections)});
-    entries.push({name:"OEBPS/toc.ncx", data:ncx(title,id,sections)});
-    entries.push({name:"OEBPS/content.opf", data:opf(title,author,id,sections)});
-
-    return new Blob([makeZip(entries)], {type:"application/epub+zip"});
-  }
-
-  fileInput.addEventListener("change", async () => {
-    const file = fileInput.files?.[0];
-    if(!file) return;
-    sourceFile = file;
-    fileText.textContent = file.name;
-    setStatus("正在读取 TXT（仅在本机浏览器中）…");
-    try{
-      sourceText = await decodeFile(file);
-      const lines = normalizeLines(sourceText);
-      const fallback = file.name.replace(/\.txt$/i,"");
-      const meta = extractMeta(lines,fallback);
-      titleInput.value = meta.title || fallback;
-      authorInput.value = meta.author || "";
-      const sections = splitSections(lines);
-      convertBtn.disabled = false;
-      refreshCoverPreview();
-      setStatus(`读取完成：识别到 ${sections.length} 个目录区块。正文没有上传。`);
-    }catch(e){
-      console.error(e);
-      setStatus("读取失败：" + e.message);
-    }
-  });
-
-  titleInput.addEventListener("input", () => { if(!customCoverFile) refreshCoverPreview(); });
-  authorInput.addEventListener("input", () => { if(!customCoverFile) refreshCoverPreview(); });
-
-  coverInput.addEventListener("change", () => {
-    const file = coverInput.files?.[0];
-    if(!file) return;
-    customCoverFile = file;
-    refreshCoverPreview();
-  });
-
-  resetCoverBtn.addEventListener("click", () => {
-    customCoverFile = null;
-    coverInput.value = "";
-    if(customCoverUrl){ URL.revokeObjectURL(customCoverUrl); customCoverUrl = ""; }
-    refreshCoverPreview();
-  });
-
-  convertBtn.addEventListener("click", async () => {
-    if(!sourceFile || !sourceText) return;
-    convertBtn.disabled = true;
-    setStatus("正在生成封面并制作 EPUB…");
-    try{
-      const lines = normalizeLines(sourceText);
-      const sections = splitSections(lines);
-      const title = titleInput.value.trim() || sourceFile.name.replace(/\.txt$/i,"");
-      const author = authorInput.value.trim();
-      epubBlob = await buildEpub(title,author,sections);
-      epubName = title.replace(/[\\/:*?"<>|]/g,"_") + ".epub";
-      shareBtn.disabled = false;
-      setStatus(`转换完成：${epubName}。点下面按钮即可存到“文件”或分享给 Kindle。`);
-    }catch(e){
-      console.error(e);
-      setStatus("转换失败：" + e.message);
-    }finally{
-      convertBtn.disabled = false;
-    }
-  });
-
-  shareBtn.addEventListener("click", async () => {
-    if(!epubBlob) return;
-    const f = new File([epubBlob],epubName,{type:"application/epub+zip"});
-    if(navigator.canShare && navigator.canShare({files:[f]}) && navigator.share){
-      try{
-        await navigator.share({files:[f],title:epubName});
-        return;
-      }catch(e){
-        if(e.name === "AbortError") return;
-      }
-    }
-    const url = URL.createObjectURL(epubBlob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = epubName;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),30000);
-    setStatus("已触发下载。可在 Safari 下载项里打开，再“分享”到 Kindle。");
-  });
-
-  refreshCoverPreview();
+(()=>{"use strict";
+const $=id=>document.getElementById(id),fileInput=$("fileInput"),fileText=$("fileText"),titleInput=$("titleInput"),authorInput=$("authorInput"),coverInput=$("coverInput"),coverPreview=$("coverPreview"),coverName=$("coverName"),resetCoverBtn=$("resetCoverBtn"),convertBtn=$("convertBtn"),shareBtn=$("shareBtn"),statusEl=$("status");
+let sourceFile=null,sourceText="",customCoverFile=null,customCoverUrl="",epubBlob=null,epubName="";
+const chapterRe=/^\s*(?:第[0-9０-９一二三四五六七八九十百千万零〇两兩]+[章节卷回篇部集].*|Chapter\s+\d+.*)$/i;
+const setStatus=m=>statusEl.textContent=m;
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"}[c]))}
+function normalizeLines(text){text=text.replace(/\r\n/g,"\n").replace(/\r/g,"\n").replace(/\u0000/g,"").replace(/\ufeff/g,"");return text.split("\n").map(raw=>raw.replace(/[ \t　]+$/g,"").replace(/^[\t　]+/g,"").replace(/^ {1,4}(?=\S)/,""))}
+function extractMeta(lines,fallbackTitle){let title=fallbackTitle,author="";for(const line of lines.slice(0,80)){let m=line.match(/^\s*(?:书名|書名)\s*[：:]\s*(.+?)\s*$/);if(m)title=m[1].trim();m=line.match(/^\s*作者\s*[：:]\s*(.+?)\s*$/);if(m)author=m[1].trim()}return{title,author}}
+function splitSections(lines){const idx=[];lines.forEach((line,i)=>{if(chapterRe.test(line))idx.push(i)});if(!idx.length)return[{title:"正文",paras:lines.filter(x=>x.trim())}];const sections=[],pre=lines.slice(0,idx[0]).filter(x=>x.trim());if(pre.length)sections.push({title:"书籍信息",paras:pre});idx.forEach((start,j)=>{const end=j+1<idx.length?idx[j+1]:lines.length;sections.push({title:lines[start].trim(),paras:lines.slice(start+1,end).filter(x=>x.trim())})});return sections}
+async function decodeFile(file){const buf=await file.arrayBuffer();for(const enc of ["utf-8","gb18030","big5"]){try{return new TextDecoder(enc,{fatal:true}).decode(buf)}catch(e){}}return new TextDecoder("utf-8").decode(buf)}
+function makeCanvas(){const c=document.createElement("canvas");c.width=1600;c.height=2560;return c}
+function wrapText(ctx,text,maxWidth){const chars=Array.from(text||""),lines=[];let line="";for(const ch of chars){const test=line+ch;if(line&&ctx.measureText(test).width>maxWidth){lines.push(line);line=ch}else line=test}if(line)lines.push(line);return lines}
+function drawAutoCover(title,author){const canvas=makeCanvas(),ctx=canvas.getContext("2d");ctx.fillStyle="#F7F5F1";ctx.fillRect(0,0,1600,2560);const safeTitle=(title||"未命名").trim(),maxWidth=1180;let size=150,lines=[];do{ctx.font=`400 ${size}px "Songti SC","STSong","SimSun",serif`;lines=wrapText(ctx,safeTitle,maxWidth);if(lines.length<=3)break;size-=8}while(size>96);while(lines.some(line=>ctx.measureText(line).width>maxWidth)&&size>96){size-=6;ctx.font=`400 ${size}px "Songti SC","STSong","SimSun",serif`;lines=wrapText(ctx,safeTitle,maxWidth)}ctx.fillStyle="#1F1F1F";ctx.textAlign="center";ctx.textBaseline="middle";const lineHeight=size*1.34,totalHeight=lineHeight*lines.length;let y=1120-totalHeight/2+lineHeight/2;lines.forEach(line=>{ctx.fillText(line,800,y);y+=lineHeight});if((author||"").trim()){ctx.fillStyle="#686868";ctx.font=`400 92px "Songti SC","STSong","SimSun",serif`;ctx.fillText(author.trim(),800,1960)}ctx.strokeStyle="#D7D7D7";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(730,2095);ctx.lineTo(870,2095);ctx.stroke();return canvas}
+function canvasToBlob(canvas,type="image/png",quality=.94){return new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error("封面生成失败")),type,quality))}
+function loadImageFromFile(file){return new Promise((resolve,reject)=>{const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{URL.revokeObjectURL(url);resolve(img)};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error("无法读取封面图片"))};img.src=url})}
+async function makeCustomCoverBlob(file){const img=await loadImageFromFile(file),canvas=makeCanvas(),ctx=canvas.getContext("2d");ctx.fillStyle="#F7F5F1";ctx.fillRect(0,0,1600,2560);const scale=Math.max(1600/img.naturalWidth,2560/img.naturalHeight),w=img.naturalWidth*scale,h=img.naturalHeight*scale;ctx.drawImage(img,(1600-w)/2,(2560-h)/2,w,h);return canvasToBlob(canvas,"image/jpeg",.92)}
+async function makeCoverBlob(title,author){return customCoverFile?makeCustomCoverBlob(customCoverFile):canvasToBlob(drawAutoCover(title,author),"image/png")}
+function refreshCoverPreview(){if(customCoverFile){coverName.textContent=customCoverFile.name;if(customCoverUrl)URL.revokeObjectURL(customCoverUrl);customCoverUrl=URL.createObjectURL(customCoverFile);coverPreview.src=customCoverUrl;resetCoverBtn.disabled=false;return}coverName.textContent="文字封面";resetCoverBtn.disabled=true;coverPreview.src=drawAutoCover(titleInput.value||"书名",authorInput.value||"作者").toDataURL("image/jpeg",.86)}
+const crcTable=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(bytes){let c=0xFFFFFFFF;for(let i=0;i<bytes.length;i++)c=crcTable[(c^bytes[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0}
+const u16=n=>[n&255,(n>>>8)&255],u32=n=>[n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255];
+function concat(chunks){let len=0;chunks.forEach(c=>len+=c.length);const out=new Uint8Array(len);let p=0;chunks.forEach(c=>{out.set(c,p);p+=c.length});return out}
+function makeZip(entries){const enc=new TextEncoder(),locals=[],centrals=[];let offset=0;for(const ent of entries){const name=enc.encode(ent.name),data=typeof ent.data==="string"?enc.encode(ent.data):ent.data,crc=crc32(data),local=new Uint8Array([...u32(0x04034b50),...u16(20),...u16(0x0800),...u16(0),...u16(0),...u16(0),...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0),...name]);locals.push(local,data);const central=new Uint8Array([...u32(0x02014b50),...u16(20),...u16(20),...u16(0x0800),...u16(0),...u16(0),...u16(0),...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0),...u16(0),...u16(0),...u16(0),...u32(0),...u32(offset),...name]);centrals.push(central);offset+=local.length+data.length}const centralStart=offset,centralBlob=concat(centrals),end=new Uint8Array([...u32(0x06054b50),...u16(0),...u16(0),...u16(entries.length),...u16(entries.length),...u32(centralBlob.length),...u32(centralStart),...u16(0)]);return concat([...locals,centralBlob,end])}
+const css=`html{-webkit-text-size-adjust:100%}body{margin:0;padding:0}p{margin:0;padding:0;text-indent:2em}h1{margin:1.2em 0;text-indent:0;text-align:center;font-weight:normal}.frontmatter p{text-indent:0}`;
+const coverXhtml=()=>`<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN"><head><meta charset="utf-8"/><title>封面</title><style>html,body{margin:0;padding:0;width:100%;height:100%;text-align:center}img{max-width:100%;max-height:100%;object-fit:contain}</style></head><body><img src="Images/cover.png" alt="封面"/></body></html>`;
+function chapterXhtml(chTitle,paras,front){const bodyClass=front?' class="frontmatter"':"",ps=paras.map(p=>`<p>${esc(p)}</p>`).join("\n");return`<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN"><head><meta charset="utf-8"/><title>${esc(chTitle)}</title><link rel="stylesheet" type="text/css" href="../Styles/style.css"/></head><body${bodyClass}><h1>${esc(chTitle)}</h1>${ps}</body></html>`}
+function navXhtml(sections){const lis=sections.map((s,i)=>`<li><a href="Text/chapter_${String(i+1).padStart(3,"0")}.xhtml">${esc(s.title)}</a></li>`).join("");return`<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="zh-CN" lang="zh-CN"><head><meta charset="utf-8"/><title>目录</title></head><body><nav epub:type="toc" id="toc"><h1>目录</h1><ol>${lis}</ol></nav></body></html>`}
+function ncx(title,id,sections){const pts=sections.map((s,i)=>`<navPoint id="navPoint-${i+1}" playOrder="${i+1}"><navLabel><text>${esc(s.title)}</text></navLabel><content src="Text/chapter_${String(i+1).padStart(3,"0")}.xhtml"/></navPoint>`).join("");return`<?xml version="1.0" encoding="UTF-8"?><ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1"><head><meta name="dtb:uid" content="${id}"/><meta name="dtb:depth" content="1"/><meta name="dtb:totalPageCount" content="0"/><meta name="dtb:maxPageNumber" content="0"/></head><docTitle><text>${esc(title)}</text></docTitle><navMap>${pts}</navMap></ncx>`}
+function opf(title,author,id,sections){const manifest=sections.map((_,i)=>`<item id="ch${i+1}" href="Text/chapter_${String(i+1).padStart(3,"0")}.xhtml" media-type="application/xhtml+xml"/>`).join(""),spine=sections.map((_,i)=>`<itemref idref="ch${i+1}"/>`).join(""),creator=author?`<dc:creator>${esc(author)}</dc:creator>`:"",modified=new Date().toISOString().replace(/\.\d{3}Z$/,"Z");return`<?xml version="1.0" encoding="utf-8"?><package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bookid" xml:lang="zh-CN"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="bookid">${id}</dc:identifier><dc:title>${esc(title)}</dc:title>${creator}<dc:language>zh-CN</dc:language><meta property="dcterms:modified">${modified}</meta><meta name="cover" content="cover-image"/></metadata><manifest><item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/><item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/><item id="css" href="Styles/style.css" media-type="text/css"/><item id="cover-image" href="Images/cover.png" media-type="image/png" properties="cover-image"/><item id="cover-page" href="cover.xhtml" media-type="application/xhtml+xml"/>${manifest}</manifest><spine toc="ncx"><itemref idref="cover-page"/>${spine}</spine></package>`}
+async function buildEpub(title,author,sections){const id="urn:uuid:"+(crypto.randomUUID?crypto.randomUUID():String(Date.now())),container=`<?xml version="1.0" encoding="UTF-8"?><container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>`,coverBlob=await makeCoverBlob(title,author),coverBytes=new Uint8Array(await coverBlob.arrayBuffer()),entries=[{name:"mimetype",data:"application/epub+zip"},{name:"META-INF/container.xml",data:container},{name:"OEBPS/Styles/style.css",data:css},{name:"OEBPS/Images/cover.png",data:coverBytes},{name:"OEBPS/cover.xhtml",data:coverXhtml()}];sections.forEach((s,i)=>entries.push({name:`OEBPS/Text/chapter_${String(i+1).padStart(3,"0")}.xhtml`,data:chapterXhtml(s.title,s.paras,i===0&&s.title==="书籍信息")}));entries.push({name:"OEBPS/nav.xhtml",data:navXhtml(sections)},{name:"OEBPS/toc.ncx",data:ncx(title,id,sections)},{name:"OEBPS/content.opf",data:opf(title,author,id,sections)});return new Blob([makeZip(entries)],{type:"application/epub+zip"})}
+fileInput.addEventListener("change",async()=>{const file=fileInput.files?.[0];if(!file)return;sourceFile=file;fileText.textContent=file.name;setStatus("正在读取 TXT（仅在本机浏览器中）…");try{sourceText=await decodeFile(file);const lines=normalizeLines(sourceText),fallback=file.name.replace(/\.txt$/i,""),meta=extractMeta(lines,fallback);titleInput.value=meta.title||fallback;authorInput.value=meta.author||"";convertBtn.disabled=false;refreshCoverPreview();setStatus("读取完成。正文没有上传。") }catch(e){console.error(e);setStatus("读取失败："+e.message)}});
+titleInput.addEventListener("input",()=>{if(!customCoverFile)refreshCoverPreview()});authorInput.addEventListener("input",()=>{if(!customCoverFile)refreshCoverPreview()});coverInput.addEventListener("change",()=>{const file=coverInput.files?.[0];if(!file)return;customCoverFile=file;refreshCoverPreview()});resetCoverBtn.addEventListener("click",()=>{customCoverFile=null;coverInput.value="";if(customCoverUrl){URL.revokeObjectURL(customCoverUrl);customCoverUrl=""}refreshCoverPreview()});
+convertBtn.addEventListener("click",async()=>{if(!sourceFile||!sourceText)return;convertBtn.disabled=true;setStatus("正在生成封面并制作 EPUB…");try{const sections=splitSections(normalizeLines(sourceText)),title=titleInput.value.trim()||sourceFile.name.replace(/\.txt$/i,""),author=authorInput.value.trim();epubBlob=await buildEpub(title,author,sections);epubName=title.replace(/[\\/:*?"<>|]/g,"_")+".epub";shareBtn.disabled=false;setStatus(`转换完成：${epubName}。点下面按钮即可存到“文件”或分享给 Kindle。`)}catch(e){console.error(e);setStatus("转换失败："+e.message)}finally{convertBtn.disabled=false}});
+shareBtn.addEventListener("click",async()=>{if(!epubBlob)return;const f=new File([epubBlob],epubName,{type:"application/epub+zip"});if(navigator.canShare&&navigator.canShare({files:[f]})&&navigator.share){try{await navigator.share({files:[f],title:epubName});return}catch(e){if(e.name==="AbortError")return}}const url=URL.createObjectURL(epubBlob),a=document.createElement("a");a.href=url;a.download=epubName;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);setStatus("已触发下载。可在 Safari 下载项里打开，再“分享”到 Kindle。")});refreshCoverPreview();
 })();
 </script>
 </body>
